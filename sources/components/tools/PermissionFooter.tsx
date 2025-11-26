@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet, Platform } from 'react-native';
+import { View, Text, Pressable, ActivityIndicator, StyleSheet, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { sessionAllow, sessionDeny } from '@/sync/ops';
 import { useUnistyles } from 'react-native-unistyles';
@@ -257,26 +257,34 @@ export const PermissionFooter: React.FC<PermissionFooterProps> = ({ permission, 
         },
     });
 
+    // Android ripple configuration for touch feedback
+    const androidRipple = {
+        color: theme.colors.surfaceRipple || 'rgba(0, 0, 0, 0.1)',
+        borderless: false,
+        foreground: true
+    };
+
     // Render Codex buttons if this is a Codex session
     if (isCodex) {
         return (
             <View style={styles.container}>
                 <View style={styles.buttonContainer}>
                     {/* Codex: Yes button */}
-                    <TouchableOpacity
-                        style={[
+                    <Pressable
+                        style={({ pressed }) => [
                             styles.button,
                             isPending && styles.buttonAllow,
                             isCodexApproved && styles.buttonSelected,
-                            (isCodexAborted || isCodexApprovedForSession) && styles.buttonInactive
+                            (isCodexAborted || isCodexApprovedForSession) && styles.buttonInactive,
+                            pressed && isPending && { opacity: 0.7 }
                         ]}
                         onPress={handleCodexApprove}
                         disabled={!isPending || loadingButton !== null || loadingForSession}
-                        activeOpacity={isPending ? 0.7 : 1}
+                        android_ripple={isPending ? androidRipple : undefined}
                     >
                         {loadingButton === 'allow' && isPending ? (
                             <View style={[styles.buttonContent, { width: 40, height: 20, justifyContent: 'center' }]}>
-                                <ActivityIndicator size={Platform.OS === 'ios' ? "small" : 14 as any} color={styles.loadingIndicatorAllow.color} />
+                                <ActivityIndicator size="small" color={styles.loadingIndicatorAllow.color} />
                             </View>
                         ) : (
                             <View style={styles.buttonContent}>
@@ -289,23 +297,24 @@ export const PermissionFooter: React.FC<PermissionFooterProps> = ({ permission, 
                                 </Text>
                             </View>
                         )}
-                    </TouchableOpacity>
+                    </Pressable>
 
                     {/* Codex: Yes, and don't ask for a session button */}
-                    <TouchableOpacity
-                        style={[
+                    <Pressable
+                        style={({ pressed }) => [
                             styles.button,
                             isPending && styles.buttonForSession,
                             isCodexApprovedForSession && styles.buttonSelected,
-                            (isCodexAborted || isCodexApproved) && styles.buttonInactive
+                            (isCodexAborted || isCodexApproved) && styles.buttonInactive,
+                            pressed && isPending && { opacity: 0.7 }
                         ]}
                         onPress={handleCodexApproveForSession}
                         disabled={!isPending || loadingButton !== null || loadingForSession}
-                        activeOpacity={isPending ? 0.7 : 1}
+                        android_ripple={isPending ? androidRipple : undefined}
                     >
                         {loadingForSession && isPending ? (
                             <View style={[styles.buttonContent, { width: 40, height: 20, justifyContent: 'center' }]}>
-                                <ActivityIndicator size={Platform.OS === 'ios' ? "small" : 14 as any} color={styles.loadingIndicatorForSession.color} />
+                                <ActivityIndicator size="small" color={styles.loadingIndicatorForSession.color} />
                             </View>
                         ) : (
                             <View style={styles.buttonContent}>
@@ -318,23 +327,24 @@ export const PermissionFooter: React.FC<PermissionFooterProps> = ({ permission, 
                                 </Text>
                             </View>
                         )}
-                    </TouchableOpacity>
+                    </Pressable>
 
                     {/* Codex: Stop, and explain what to do button */}
-                    <TouchableOpacity
-                        style={[
+                    <Pressable
+                        style={({ pressed }) => [
                             styles.button,
                             isPending && styles.buttonDeny,
                             isCodexAborted && styles.buttonSelected,
-                            (isCodexApproved || isCodexApprovedForSession) && styles.buttonInactive
+                            (isCodexApproved || isCodexApprovedForSession) && styles.buttonInactive,
+                            pressed && isPending && { opacity: 0.7 }
                         ]}
                         onPress={handleCodexAbort}
                         disabled={!isPending || loadingButton !== null || loadingForSession}
-                        activeOpacity={isPending ? 0.7 : 1}
+                        android_ripple={isPending ? androidRipple : undefined}
                     >
                         {loadingButton === 'abort' && isPending ? (
                             <View style={[styles.buttonContent, { width: 40, height: 20, justifyContent: 'center' }]}>
-                                <ActivityIndicator size={Platform.OS === 'ios' ? "small" : 14 as any} color={styles.loadingIndicatorDeny.color} />
+                                <ActivityIndicator size="small" color={styles.loadingIndicatorDeny.color} />
                             </View>
                         ) : (
                             <View style={styles.buttonContent}>
@@ -347,7 +357,7 @@ export const PermissionFooter: React.FC<PermissionFooterProps> = ({ permission, 
                                 </Text>
                             </View>
                         )}
-                    </TouchableOpacity>
+                    </Pressable>
                 </View>
             </View>
         );
@@ -357,20 +367,21 @@ export const PermissionFooter: React.FC<PermissionFooterProps> = ({ permission, 
     return (
         <View style={styles.container}>
             <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                    style={[
+                <Pressable
+                    style={({ pressed }) => [
                         styles.button,
                         isPending && styles.buttonAllow,
                         isApprovedViaAllow && styles.buttonSelected,
-                        (isDenied || isApprovedViaAllEdits || isApprovedForSession) && styles.buttonInactive
+                        (isDenied || isApprovedViaAllEdits || isApprovedForSession) && styles.buttonInactive,
+                        pressed && isPending && { opacity: 0.7 }
                     ]}
                     onPress={handleApprove}
                     disabled={!isPending || loadingButton !== null || loadingAllEdits || loadingForSession}
-                    activeOpacity={isPending ? 0.7 : 1}
+                    android_ripple={isPending ? androidRipple : undefined}
                 >
                     {loadingButton === 'allow' && isPending ? (
                         <View style={[styles.buttonContent, { width: 40, height: 20, justifyContent: 'center' }]}>
-                            <ActivityIndicator size={Platform.OS === 'ios' ? "small" : 14 as any} color={styles.loadingIndicatorAllow.color} />
+                            <ActivityIndicator size="small" color={styles.loadingIndicatorAllow.color} />
                         </View>
                     ) : (
                         <View style={styles.buttonContent}>
@@ -383,24 +394,25 @@ export const PermissionFooter: React.FC<PermissionFooterProps> = ({ permission, 
                             </Text>
                         </View>
                     )}
-                </TouchableOpacity>
+                </Pressable>
 
                 {/* Allow All Edits button - only show for Edit and MultiEdit tools */}
                 {(toolName === 'Edit' || toolName === 'MultiEdit' || toolName === 'Write' || toolName === 'NotebookEdit' || toolName === 'exit_plan_mode' || toolName === 'ExitPlanMode') && (
-                    <TouchableOpacity
-                        style={[
+                    <Pressable
+                        style={({ pressed }) => [
                             styles.button,
                             isPending && styles.buttonAllowAll,
                             isApprovedViaAllEdits && styles.buttonSelected,
-                            (isDenied || isApprovedViaAllow || isApprovedForSession) && styles.buttonInactive
+                            (isDenied || isApprovedViaAllow || isApprovedForSession) && styles.buttonInactive,
+                            pressed && isPending && { opacity: 0.7 }
                         ]}
                         onPress={handleApproveAllEdits}
                         disabled={!isPending || loadingButton !== null || loadingAllEdits || loadingForSession}
-                        activeOpacity={isPending ? 0.7 : 1}
+                        android_ripple={isPending ? androidRipple : undefined}
                     >
                         {loadingAllEdits && isPending ? (
                             <View style={[styles.buttonContent, { width: 40, height: 20, justifyContent: 'center' }]}>
-                                <ActivityIndicator size={Platform.OS === 'ios' ? "small" : 14 as any} color={styles.loadingIndicatorAllowAll.color} />
+                                <ActivityIndicator size="small" color={styles.loadingIndicatorAllowAll.color} />
                             </View>
                         ) : (
                             <View style={styles.buttonContent}>
@@ -413,25 +425,26 @@ export const PermissionFooter: React.FC<PermissionFooterProps> = ({ permission, 
                                 </Text>
                             </View>
                         )}
-                    </TouchableOpacity>
+                    </Pressable>
                 )}
 
                 {/* Allow for session button - only show for non-edit, non-exit-plan tools */}
                 {toolName && toolName !== 'Edit' && toolName !== 'MultiEdit' && toolName !== 'Write' && toolName !== 'NotebookEdit' && toolName !== 'exit_plan_mode' && toolName !== 'ExitPlanMode' && (
-                    <TouchableOpacity
-                        style={[
+                    <Pressable
+                        style={({ pressed }) => [
                             styles.button,
                             isPending && styles.buttonForSession,
                             isApprovedForSession && styles.buttonSelected,
-                            (isDenied || isApprovedViaAllow || isApprovedViaAllEdits) && styles.buttonInactive
+                            (isDenied || isApprovedViaAllow || isApprovedViaAllEdits) && styles.buttonInactive,
+                            pressed && isPending && { opacity: 0.7 }
                         ]}
                         onPress={handleApproveForSession}
                         disabled={!isPending || loadingButton !== null || loadingAllEdits || loadingForSession}
-                        activeOpacity={isPending ? 0.7 : 1}
+                        android_ripple={isPending ? androidRipple : undefined}
                     >
                         {loadingForSession && isPending ? (
                             <View style={[styles.buttonContent, { width: 40, height: 20, justifyContent: 'center' }]}>
-                                <ActivityIndicator size={Platform.OS === 'ios' ? "small" : 14 as any} color={styles.loadingIndicatorForSession.color} />
+                                <ActivityIndicator size="small" color={styles.loadingIndicatorForSession.color} />
                             </View>
                         ) : (
                             <View style={styles.buttonContent}>
@@ -444,23 +457,24 @@ export const PermissionFooter: React.FC<PermissionFooterProps> = ({ permission, 
                                 </Text>
                             </View>
                         )}
-                    </TouchableOpacity>
+                    </Pressable>
                 )}
 
-                <TouchableOpacity
-                    style={[
+                <Pressable
+                    style={({ pressed }) => [
                         styles.button,
                         isPending && styles.buttonDeny,
                         isDenied && styles.buttonSelected,
-                        (isApproved) && styles.buttonInactive
+                        (isApproved) && styles.buttonInactive,
+                        pressed && isPending && { opacity: 0.7 }
                     ]}
                     onPress={handleDeny}
                     disabled={!isPending || loadingButton !== null || loadingAllEdits || loadingForSession}
-                    activeOpacity={isPending ? 0.7 : 1}
+                    android_ripple={isPending ? androidRipple : undefined}
                 >
                     {loadingButton === 'deny' && isPending ? (
                         <View style={[styles.buttonContent, { width: 40, height: 20, justifyContent: 'center' }]}>
-                            <ActivityIndicator size={Platform.OS === 'ios' ? "small" : 14 as any} color={styles.loadingIndicatorDeny.color} />
+                            <ActivityIndicator size="small" color={styles.loadingIndicatorDeny.color} />
                         </View>
                     ) : (
                         <View style={styles.buttonContent}>
@@ -473,7 +487,7 @@ export const PermissionFooter: React.FC<PermissionFooterProps> = ({ permission, 
                             </Text>
                         </View>
                     )}
-                </TouchableOpacity>
+                </Pressable>
             </View>
         </View>
     );
