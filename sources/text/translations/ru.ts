@@ -112,6 +112,8 @@ export const ru: TranslationStructure = {
         exchangingTokens: 'Обмен токенов...',
         usage: 'Использование',
         usageSubtitle: 'Просмотр использования API и затрат',
+        aiLanguage: 'Язык ИИ',
+        aiLanguageSubtitle: 'Установить язык для ответов ИИ',
 
         // Dynamic settings messages
         accountConnected: ({ service }: { service: string }) => `Аккаунт ${service} подключен`,
@@ -745,6 +747,17 @@ export const ru: TranslationStructure = {
         needsRestart: 'Язык изменён',
         needsRestartMessage: 'Приложение нужно перезапустить для применения новых языковых настроек.',
         restartNow: 'Перезапустить',
+    },
+
+    settingsAiLanguage: {
+        // AI response language settings screen
+        title: 'Язык ответов ИИ',
+        description: 'Выберите язык для ответов ИИ. Код останется на английском языке, но все пояснения и документация будут на выбранном вами языке.',
+        currentLanguage: 'Текущий язык',
+        automatic: 'Автоматически',
+        automaticSubtitle: 'Такой же, как язык общения',
+        korean: 'Корейский',
+        english: 'Английский',
     },
 
     textSelection: {

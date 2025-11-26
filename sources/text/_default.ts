@@ -129,6 +129,8 @@ export const en = {
         exchangingTokens: 'Exchanging tokens...',
         usage: 'Usage',
         usageSubtitle: 'View your API usage and costs',
+        aiLanguage: 'AI Language',
+        aiLanguageSubtitle: 'Set the language for AI responses',
 
         // Dynamic settings messages
         accountConnected: ({ service }: { service: string }) => `${service} account connected`,
@@ -584,6 +586,17 @@ export const en = {
         needsRestart: 'Language Changed',
         needsRestartMessage: 'The app needs to restart to apply the new language setting.',
         restartNow: 'Restart Now',
+    },
+
+    settingsAiLanguage: {
+        // AI response language settings screen
+        title: 'AI Response Language',
+        description: 'Choose the language for AI responses. Code will remain in English, but all explanations and documentation will be in your selected language.',
+        currentLanguage: 'Current Language',
+        automatic: 'Automatic',
+        automaticSubtitle: 'Same as conversation language',
+        korean: 'Korean',
+        english: 'English',
     },
 
     connectButton: {

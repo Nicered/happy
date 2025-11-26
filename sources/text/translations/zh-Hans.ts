@@ -131,6 +131,8 @@ export const zhHans: TranslationStructure = {
         exchangingTokens: '正在交换令牌...',
         usage: '使用情况',
         usageSubtitle: '查看 API 使用情况和费用',
+        aiLanguage: 'AI 语言',
+        aiLanguageSubtitle: '设置 AI 回复的语言',
 
         // Dynamic settings messages
         accountConnected: ({ service }: { service: string }) => `已连接 ${service} 账户`,
@@ -586,6 +588,17 @@ export const zhHans: TranslationStructure = {
         needsRestart: '语言已更改',
         needsRestartMessage: '应用需要重启以应用新的语言设置。',
         restartNow: '立即重启',
+    },
+
+    settingsAiLanguage: {
+        // AI response language settings screen
+        title: 'AI 回复语言',
+        description: '选择 AI 回复的语言。代码将保持英文，但所有解释和文档将使用您选择的语言。',
+        currentLanguage: '当前语言',
+        automatic: '自动',
+        automaticSubtitle: '与对话语言相同',
+        korean: '韩语',
+        english: '英语',
     },
 
     connectButton: {

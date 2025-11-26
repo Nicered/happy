@@ -129,6 +129,8 @@ export const es: TranslationStructure = {
         exchangingTokens: 'Intercambiando tokens...',
         usage: 'Uso',
         usageSubtitle: 'Ver tu uso de API y costos',
+        aiLanguage: 'Idioma de IA',
+        aiLanguageSubtitle: 'Establecer el idioma para las respuestas de IA',
 
         // Dynamic settings messages
         accountConnected: ({ service }: { service: string }) => `Cuenta de ${service} conectada`,
@@ -584,6 +586,17 @@ export const es: TranslationStructure = {
         needsRestart: 'Idioma cambiado',
         needsRestartMessage: 'La aplicación necesita reiniciarse para aplicar la nueva configuración de idioma.',
         restartNow: 'Reiniciar ahora',
+    },
+
+    settingsAiLanguage: {
+        // AI response language settings screen
+        title: 'Idioma de respuestas de IA',
+        description: 'Elige el idioma para las respuestas de IA. El código permanecerá en inglés, pero todas las explicaciones y documentación estarán en el idioma que selecciones.',
+        currentLanguage: 'Idioma actual',
+        automatic: 'Automático',
+        automaticSubtitle: 'Mismo idioma que la conversación',
+        korean: 'Coreano',
+        english: 'Inglés',
     },
 
     connectButton: {

@@ -22,6 +22,7 @@ export const SettingsSchema = z.object({
     reviewPromptLikedApp: z.boolean().nullish().describe('Whether user liked the app when asked'),
     voiceAssistantLanguage: z.string().nullable().describe('Preferred language for voice assistant (null for auto-detect)'),
     preferredLanguage: z.string().nullable().describe('Preferred UI language (null for auto-detect from device locale)'),
+    aiResponseLanguage: z.string().nullable().describe('Preferred language for AI responses (null for auto/same as conversation)'),
     recentMachinePaths: z.array(z.object({
         machineId: z.string(),
         path: z.string()
@@ -68,6 +69,7 @@ export const settingsDefaults: Settings = {
     reviewPromptLikedApp: null,
     voiceAssistantLanguage: null,
     preferredLanguage: null,
+    aiResponseLanguage: null,
     recentMachinePaths: [],
     lastUsedAgent: null,
     lastUsedPermissionMode: null,

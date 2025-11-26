@@ -220,9 +220,10 @@ class Sync {
             return;
         }
 
-        // Read permission mode and model mode from session state
+        // Read permission mode, model mode, and AI response language from state
         const permissionMode = session.permissionMode || 'default';
         const modelMode = session.modelMode || 'default';
+        const aiResponseLanguage = storage.getState().settings.aiResponseLanguage;
 
         // Generate local ID
         const localId = randomUUID();
@@ -272,6 +273,13 @@ class Sync {
                 break;
         }
 
+        // Build system prompt with optional language instruction
+        let finalSystemPrompt = systemPrompt;
+        if (aiResponseLanguage) {
+            const languageInstruction = `\n\n# Response Language\n\nYou MUST respond in ${aiResponseLanguage}. All explanations, comments, and documentation should be in ${aiResponseLanguage}. Code itself should remain in English (variable names, function names, etc.), but all surrounding text must be in ${aiResponseLanguage}.`;
+            finalSystemPrompt = systemPrompt + languageInstruction;
+        }
+
         // Create user message content with metadata
         const content: RawRecord = {
             role: 'user',
@@ -284,7 +292,7 @@ class Sync {
                 permissionMode: permissionMode || 'default',
                 model,
                 fallbackModel,
-                appendSystemPrompt: systemPrompt,
+                appendSystemPrompt: finalSystemPrompt,
                 ...(displayText && { displayText }) // Add displayText if provided
             }
         };
