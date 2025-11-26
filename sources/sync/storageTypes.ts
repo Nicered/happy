@@ -4,6 +4,15 @@ import { z } from "zod";
 // Agent states
 //
 
+// Structured slash command with optional description and namespace
+export const SlashCommandSchema = z.object({
+    name: z.string(), // Command name (e.g., "review" or "frontend:component")
+    description: z.string().optional(), // Optional description for autocomplete
+    source: z.enum(['builtin', 'project', 'user']).optional(), // Where the command comes from
+});
+
+export type SlashCommand = z.infer<typeof SlashCommandSchema>;
+
 export const MetadataSchema = z.object({
     path: z.string(),
     host: z.string(),
@@ -17,9 +26,12 @@ export const MetadataSchema = z.object({
     machineId: z.string().optional(),
     claudeSessionId: z.string().optional(), // Claude Code session ID
     tools: z.array(z.string()).optional(),
-    slashCommands: z.array(z.string()).optional(),
+    // Support both legacy string[] and new structured format
+    slashCommands: z.array(
+        z.union([z.string(), SlashCommandSchema])
+    ).optional(),
     homeDir: z.string().optional(), // User's home directory on the machine
-    happyHomeDir: z.string().optional(), // Happy configuration directory 
+    happyHomeDir: z.string().optional(), // Happy configuration directory
     hostPid: z.number().optional(), // Process ID of the session
     flavor: z.string().nullish() // Session flavor/variant identifier
 });

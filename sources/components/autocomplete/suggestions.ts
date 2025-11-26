@@ -10,18 +10,20 @@ export async function getCommandSuggestions(sessionId: string, query: string): P
 }[]> {
     // Remove the "/" prefix for searching
     const searchTerm = query.slice(1);
-    
+
     try {
         // Use the command search cache with fuzzy matching
         const commands = await searchCommands(sessionId, searchTerm, { limit: 5 });
-        
+
         // Convert CommandItem to suggestion format
         return commands.map((cmd: CommandItem) => ({
             key: `cmd-${cmd.command}`,
             text: `/${cmd.command}`,
             component: () => React.createElement(CommandSuggestion, {
                 command: cmd.command,
-                description: cmd.description
+                description: cmd.description,
+                namespace: cmd.namespace,
+                source: cmd.source
             })
         }));
     } catch (error) {
