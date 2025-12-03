@@ -129,6 +129,8 @@ export const ca: TranslationStructure = {
         exchangingTokens: 'Intercanviant tokens...',
         usage: 'Ús',
         usageSubtitle: "Veure l'ús de l'API i costos",
+        aiLanguage: 'Idioma d\'IA',
+        aiLanguageSubtitle: 'Estableix l\'idioma per a les respostes d\'IA',
 
         // Dynamic settings messages
         accountConnected: ({ service }: { service: string }) => `Compte de ${service} connectat`,
@@ -584,6 +586,17 @@ export const ca: TranslationStructure = {
         needsRestart: 'Idioma canviat',
         needsRestartMessage: 'L\'aplicació necessita reiniciar-se per aplicar la nova configuració d\'idioma.',
         restartNow: 'Reinicia ara',
+    },
+
+    settingsAiLanguage: {
+        // AI response language settings screen
+        title: 'Idioma de respostes d\'IA',
+        description: 'Tria l\'idioma per a les respostes de la IA. El codi romandrà en anglès, però totes les explicacions i documentació estaran en l\'idioma que seleccionis.',
+        currentLanguage: 'Idioma actual',
+        automatic: 'Automàtic',
+        automaticSubtitle: 'Mateix idioma que la conversa',
+        korean: 'Coreà',
+        english: 'Anglès',
     },
 
     connectButton: {

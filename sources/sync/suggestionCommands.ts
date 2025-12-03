@@ -1,14 +1,18 @@
 /**
  * Suggestion commands functionality for slash commands
  * Reads commands directly from session metadata storage
+ * Supports both legacy string format and new structured format with descriptions
  */
 
 import Fuse from 'fuse.js';
 import { storage } from './storage';
+import { SlashCommand } from './storageTypes';
 
 export interface CommandItem {
-    command: string;        // The command without slash (e.g., "compact")
+    command: string;        // The command without slash (e.g., "compact" or "frontend:component")
     description?: string;   // Optional description of what the command does
+    namespace?: string;     // Optional namespace/category (e.g., "frontend" from "frontend:component")
+    source?: 'builtin' | 'project' | 'user'; // Where the command comes from
 }
 
 interface SearchOptions {
@@ -16,7 +20,7 @@ interface SearchOptions {
     threshold?: number;
 }
 
-// Commands to ignore/filter out
+// Commands to ignore/filter out (CLI-only commands)
 export const IGNORED_COMMANDS = [
     "add-dir",
     "agents",
@@ -54,28 +58,62 @@ export const IGNORED_COMMANDS = [
 
 // Default commands always available
 const DEFAULT_COMMANDS: CommandItem[] = [
-    { command: 'compact', description: 'Compact the conversation history' },
-    { command: 'clear', description: 'Clear the conversation' }
+    { command: 'compact', description: 'Compact the conversation history', source: 'builtin' },
+    { command: 'clear', description: 'Clear the conversation', source: 'builtin' }
 ];
 
-// Command descriptions for known tools/commands
-const COMMAND_DESCRIPTIONS: Record<string, string> = {
-    // Default commands
+// Fallback descriptions for known commands (used when server doesn't provide description)
+const FALLBACK_DESCRIPTIONS: Record<string, string> = {
     compact: 'Compact the conversation history',
-    
-    // Common tool commands
-    help: 'Show available commands',
     clear: 'Clear the conversation',
+    help: 'Show available commands',
     reset: 'Reset the session',
-    export: 'Export conversation',
     debug: 'Show debug information',
-    status: 'Show connection status',
     stop: 'Stop current operation',
     abort: 'Abort current operation',
     cancel: 'Cancel current operation',
-    
-    // Add more descriptions as needed
 };
+
+/**
+ * Parse namespace from command name
+ * e.g., "frontend:component" -> { namespace: "frontend", command: "frontend:component" }
+ */
+function parseNamespace(commandName: string): { namespace?: string; baseName: string } {
+    const colonIndex = commandName.indexOf(':');
+    if (colonIndex > 0) {
+        return {
+            namespace: commandName.substring(0, colonIndex),
+            baseName: commandName.substring(colonIndex + 1)
+        };
+    }
+    return { baseName: commandName };
+}
+
+/**
+ * Normalize slash command to CommandItem
+ * Handles both legacy string format and new structured format
+ */
+function normalizeCommand(cmd: string | SlashCommand): CommandItem {
+    if (typeof cmd === 'string') {
+        // Legacy string format
+        const { namespace } = parseNamespace(cmd);
+        return {
+            command: cmd,
+            description: FALLBACK_DESCRIPTIONS[cmd],
+            namespace,
+            source: 'project'
+        };
+    } else {
+        // New structured format
+        const { namespace } = parseNamespace(cmd.name);
+        return {
+            command: cmd.name,
+            description: cmd.description || FALLBACK_DESCRIPTIONS[cmd.name],
+            namespace,
+            source: cmd.source || 'project'
+        };
+    }
+}
 
 // Get commands from session metadata
 function getCommandsFromSession(sessionId: string): CommandItem[] {
@@ -86,23 +124,24 @@ function getCommandsFromSession(sessionId: string): CommandItem[] {
     }
 
     const commands: CommandItem[] = [...DEFAULT_COMMANDS];
-    
+    const addedCommands = new Set(commands.map(c => c.command));
+
     // Add commands from metadata.slashCommands (filter with ignore list)
     if (session.metadata.slashCommands) {
         for (const cmd of session.metadata.slashCommands) {
+            const normalized = normalizeCommand(cmd);
+
             // Skip if in ignore list
-            if (IGNORED_COMMANDS.includes(cmd)) continue;
-            
-            // Check if it's already in default commands
-            if (!commands.find(c => c.command === cmd)) {
-                commands.push({
-                    command: cmd,
-                    description: COMMAND_DESCRIPTIONS[cmd]  // Optional description
-                });
-            }
+            if (IGNORED_COMMANDS.includes(normalized.command)) continue;
+
+            // Skip if already added
+            if (addedCommands.has(normalized.command)) continue;
+
+            commands.push(normalized);
+            addedCommands.add(normalized.command);
         }
     }
-    
+
     return commands;
 }
 

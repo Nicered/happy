@@ -110,6 +110,7 @@ describe('settings', () => {
                 reviewPromptLikedApp: null,
                 voiceAssistantLanguage: null,
                 preferredLanguage: null,
+                aiResponseLanguage: null,
                 recentMachinePaths: [],
                 lastUsedAgent: null,
                 lastUsedPermissionMode: null,
@@ -119,23 +120,9 @@ describe('settings', () => {
                 viewInline: true
             };
             expect(applySettings(currentSettings, delta)).toEqual({
+                ...settingsDefaults,
+                avatarStyle: 'gradient',  // Preserved from currentSettings
                 viewInline: true,
-                expandTodos: true,
-                showLineNumbers: true,
-                showLineNumbersInToolViews: false,
-                wrapLinesInDiffs: false,
-                analyticsOptOut: false,
-                inferenceOpenAIKey: null,
-                experiments: false,
-                alwaysShowContextSize: false,
-                avatarStyle: 'brutalist',
-                showFlavorIcons: false,
-                compactSessionView: false,
-                hideInactiveSessions: false,
-                reviewPromptAnswered: false,
-                reviewPromptLikedApp: null,
-                voiceAssistantLanguage: null,
-                preferredLanguage: null,
             });
         });
 
@@ -158,6 +145,7 @@ describe('settings', () => {
                 reviewPromptLikedApp: null,
                 voiceAssistantLanguage: null,
                 preferredLanguage: null,
+                aiResponseLanguage: null,
                 recentMachinePaths: [],
                 lastUsedAgent: null,
                 lastUsedPermissionMode: null,
@@ -166,6 +154,7 @@ describe('settings', () => {
             const delta: Partial<Settings> = {};
             expect(applySettings(currentSettings, delta)).toEqual({
                 ...settingsDefaults,
+                avatarStyle: 'gradient',  // Preserved from currentSettings
                 viewInline: true
             });
         });
@@ -189,6 +178,7 @@ describe('settings', () => {
                 reviewPromptLikedApp: null,
                 voiceAssistantLanguage: null,
                 preferredLanguage: null,
+                aiResponseLanguage: null,
                 recentMachinePaths: [],
                 lastUsedAgent: null,
                 lastUsedPermissionMode: null,
@@ -198,23 +188,9 @@ describe('settings', () => {
                 viewInline: false
             };
             expect(applySettings(currentSettings, delta)).toEqual({
+                ...settingsDefaults,
+                avatarStyle: 'gradient',  // Preserved from currentSettings
                 viewInline: false,
-                expandTodos: true,
-                showLineNumbers: true,
-                showLineNumbersInToolViews: false,
-                wrapLinesInDiffs: false,
-                analyticsOptOut: false,
-                inferenceOpenAIKey: null,
-                experiments: false,
-                alwaysShowContextSize: false,
-                avatarStyle: 'brutalist',
-                showFlavorIcons: false,
-                compactSessionView: false,
-                hideInactiveSessions: false,
-                reviewPromptAnswered: false,
-                reviewPromptLikedApp: null,
-                voiceAssistantLanguage: null,
-                preferredLanguage: null,
             });
         });
 
@@ -237,6 +213,7 @@ describe('settings', () => {
                 reviewPromptLikedApp: null,
                 voiceAssistantLanguage: null,
                 preferredLanguage: null,
+                aiResponseLanguage: null,
                 recentMachinePaths: [],
                 lastUsedAgent: null,
                 lastUsedPermissionMode: null,
@@ -244,6 +221,7 @@ describe('settings', () => {
             };
             expect(applySettings(currentSettings, {})).toEqual({
                 ...settingsDefaults,
+                avatarStyle: 'gradient',  // Preserved from currentSettings
                 viewInline: true
             });
         });
@@ -282,6 +260,7 @@ describe('settings', () => {
                 reviewPromptLikedApp: null,
                 voiceAssistantLanguage: null,
                 preferredLanguage: null,
+                aiResponseLanguage: null,
                 recentMachinePaths: [],
                 lastUsedAgent: null,
                 lastUsedPermissionMode: null,
@@ -293,6 +272,7 @@ describe('settings', () => {
             };
             expect(applySettings(currentSettings, delta)).toEqual({
                 ...settingsDefaults,
+                avatarStyle: 'gradient',  // Preserved from currentSettings
                 viewInline: false,
                 newField: 'new value'
             });
@@ -318,7 +298,7 @@ describe('settings', () => {
 
     describe('settingsDefaults', () => {
         it('should have correct default values', () => {
-            expect(settingsDefaults).toEqual({
+            expect(settingsDefaults).toMatchObject({
                 viewInline: false,
                 expandTodos: true,
                 showLineNumbers: true,

@@ -292,9 +292,13 @@ export const storage = create<StorageState>()((set, get) => {
             return Object.values(state.sessions).filter(s => s.active);
         },
         applySessions: (sessions: (Omit<Session, 'presence'> & { presence?: "online" | number })[]) => set((state) => {
-            // Load drafts and permission modes if sessions are empty (initial load)
+            // Load drafts from saved data on initial load only
             const savedDrafts = Object.keys(state.sessions).length === 0 ? sessionDrafts : {};
-            const savedPermissionModes = Object.keys(state.sessions).length === 0 ? sessionPermissionModes : {};
+            // Always load saved permission modes from persistence to prevent loss on server sync
+            // This is critical for yolo mode persistence (#206)
+            const savedPermissionModes = Object.keys(state.sessions).length === 0
+                ? sessionPermissionModes
+                : loadSessionPermissionModes();
 
             // Merge new sessions with existing ones
             const mergedSessions: Record<string, Session> = { ...state.sessions };
@@ -307,6 +311,7 @@ export const storage = create<StorageState>()((set, get) => {
                 // Preserve existing draft and permission mode if they exist, or load from saved data
                 const existingDraft = state.sessions[session.id]?.draft;
                 const savedDraft = savedDrafts[session.id];
+                // Priority: existing in-memory mode > saved persistent mode > server default
                 const existingPermissionMode = state.sessions[session.id]?.permissionMode;
                 const savedPermissionMode = savedPermissionModes[session.id];
                 mergedSessions[session.id] = {

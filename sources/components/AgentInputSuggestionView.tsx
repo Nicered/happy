@@ -8,13 +8,28 @@ import { t } from '@/text';
 interface CommandSuggestionProps {
     command: string;
     description?: string;
+    namespace?: string;
+    source?: 'builtin' | 'project' | 'user';
 }
 
-export const CommandSuggestion = React.memo(({ command, description }: CommandSuggestionProps) => {
+export const CommandSuggestion = React.memo(({ command, description, namespace, source }: CommandSuggestionProps) => {
+    // Determine icon based on source
+    const iconName = source === 'user' ? 'person-outline' :
+                     source === 'project' ? 'folder-outline' :
+                     'terminal-outline';
+
     return (
         <View style={styles.suggestionContainer}>
-            <Text 
+            <View style={styles.commandIconContainer}>
+                <Ionicons
+                    name={iconName}
+                    size={14}
+                    color={styles.commandIconColor.color}
+                />
+            </View>
+            <Text
                 style={[styles.commandText, { marginRight: description ? 12 : 0 }]}
+                numberOfLines={1}
             >
                 /{command}
             </Text>
@@ -66,6 +81,18 @@ const styles = StyleSheet.create((theme) => ({
         paddingHorizontal: 16,
         paddingVertical: 12,
         height: 48,
+    },
+    commandIconContainer: {
+        width: 24,
+        height: 24,
+        borderRadius: 12,
+        backgroundColor: theme.colors.surfaceHigh,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: 10,
+    },
+    commandIconColor: {
+        color: theme.colors.textSecondary,
     },
     commandText: {
         fontSize: 14,

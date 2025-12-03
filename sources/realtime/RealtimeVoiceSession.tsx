@@ -89,28 +89,33 @@ export const RealtimeVoiceSession: React.FC = () => {
     const conversation = useConversation({
         clientTools: realtimeClientTools,
         onConnect: (data) => {
-            // console.log('Realtime session connected:', data);
+            if (__DEV__) console.log('🎤 [Voice] Connected:', data);
             storage.getState().setRealtimeStatus('connected');
         },
         onDisconnect: () => {
-            // console.log('Realtime session disconnected');
+            if (__DEV__) console.log('🎤 [Voice] Disconnected');
             storage.getState().setRealtimeStatus('disconnected');
         },
         onMessage: (data) => {
-            // console.log('Realtime message:', data);
+            // Message callback - ElevenLabs SDK handles audio playback internally
+            // Log in dev mode for debugging voice issues (#235, #241)
+            if (__DEV__) console.log('🎤 [Voice] Message:', JSON.stringify(data).substring(0, 200));
         },
         onError: (error) => {
-            // console.error('Realtime error:', error);
+            // Always log errors for debugging voice issues
+            console.error('🎤 [Voice] Error:', error);
             storage.getState().setRealtimeStatus('error');
         },
         onStatusChange: (data) => {
-            // console.log('Realtime status change:', data);
+            // Status: listening, speaking, thinking - useful for debugging #235
+            if (__DEV__) console.log('🎤 [Voice] Status:', data);
         },
         onModeChange: (data) => {
-            // console.log('Realtime mode change:', data);
+            // Mode changes between user speaking and agent speaking
+            if (__DEV__) console.log('🎤 [Voice] Mode:', data);
         },
         onDebug: (message) => {
-            // console.debug('Realtime debug:', message);
+            if (__DEV__) console.debug('🎤 [Voice] Debug:', message);
         }
     });
 
